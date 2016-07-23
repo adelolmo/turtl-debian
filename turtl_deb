@@ -1,0 +1,60 @@
+#!/bin/sh
+
+set -e
+
+VERSION=0.6.4
+
+[ $(which fpm) ] || echo "Install fpm first. https://github.com/jordansissel/fpm/wiki"
+
+TMP=/tmp/turtldeb
+TMP_DEB=$TMP/deb
+
+rm -fr $TMP
+mkdir -p $TMP_DEB
+
+cd /tmp
+
+echo Retrieving artifact ...
+[ -f /tmp/turtl-linux64-$VERSION.tar.bz2 ] || wget https://turtl.it/releases/desktop/turtl-linux64-$VERSION.tar.bz2
+
+echo Extracting tar ...
+tar xvf /tmp/turtl-linux64-$VERSION.tar.bz2 -C $TMP > /dev/null 2>&1
+
+echo Preparing package directory ...
+mkdir -p $TMP_DEB/usr/share/turtl
+cp -R $TMP/turtl-linux64/turtl/* $TMP_DEB/usr/share/turtl
+
+echo Moving icon ...
+mkdir -p $TMP_DEB/usr/share/pixmaps
+mv $TMP_DEB/usr/share/turtl/icon.png $TMP_DEB/usr/share/pixmaps/turtl.png
+
+echo Fix files permisions ...
+chmod 0644 $TMP_DEB/usr/share/turtl/*
+chmod 0755 $TMP_DEB/usr/share/turtl/turtl $TMP_DEB/usr/share/turtl/turtl-bin $TMP_DEB/usr/share/turtl/chromedriver $TMP_DEB/usr/share/turtl/nacl* $TMP_DEB/usr/share/turtl/nwjc $TMP_DEB/usr/share/turtl/payload
+chmod 0755 $TMP_DEB/usr/share/turtl/locales $TMP_DEB/usr/share/turtl/lib $TMP_DEB/usr/share/turtl/pnacl
+chmod 0644 $TMP_DEB/usr/share/turtl/locales/* $TMP_DEB/usr/share/turtl/pnacl/*
+chmod 0755 $TMP_DEB/usr/share/turtl/lib/*
+
+echo Creating menu entry ...
+mkdir -p $TMP_DEB/usr/share/applications
+cat > $TMP_DEB/usr/share/applications/turtl.desktop <<EOF
+[Desktop Entry]
+Name=Turtl
+GenericName=Secure notes
+Comment=Private notes and bookmarks with collaboration.
+Exec=/usr/share/turtl/turtl
+Icon=turtl
+Type=Application
+Terminal=false
+Categories=Network;Application;
+Keywords=secure;security;privacy;private;notes;bookmarks;collaborate;research;
+StartupNotify=true
+EOF
+
+echo Creating debian package ...
+cd $TMP
+$(which fpm) -s dir -t deb -n turtl -v $VERSION --license GPLv3 --vendor "Lyon Bros. Enterprises, LLC" --maintainer info@turtl.it --url https://turtl.it --description "Private notes and bookmarks with collaboration." deb/=/
+
+echo
+echo Package created in $TMP
+echo
