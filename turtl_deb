@@ -2,8 +2,6 @@
 
 set -e
 
-VERSION=0.6.4
-
 [ $(which fpm) ] || echo "Install fpm first. https://github.com/jordansissel/fpm/wiki"
 
 TMP=/tmp/turtldeb
@@ -14,15 +12,25 @@ mkdir -p $TMP_DEB
 
 cd /tmp
 
-echo Retrieving artifact ...
-[ -f /tmp/turtl-linux64-$VERSION.tar.bz2 ] || wget https://turtl.it/releases/desktop/turtl-linux64-$VERSION.tar.bz2
+arch=64
+if [ -n "$1" ]; then
+        arch=$1
+fi
+
+version=$( wget https://turtl.it -O qturtlhome > /dev/null 2>&1 && cat turtlhome | grep -oE "turtl-linux64-[0-9].[0-9].[0-9]" | uniq | grep -Eo "[0-9].[0-9].[0-9]*$" )
+if [ -n "$2" ]; then
+	version=$2
+fi
+
+echo Retrieving artifact $arch $version ...
+[ -f /tmp/turtl-linux$arch-version.tar.bz2 ] || wget https://turtl.it/releases/desktop/turtl-linux$arch-$version.tar.bz2
 
 echo Extracting tar ...
-tar xvf /tmp/turtl-linux64-$VERSION.tar.bz2 -C $TMP > /dev/null 2>&1
+tar xvf /tmp/turtl-linux$arch-$version.tar.bz2 -C $TMP > /dev/null 2>&1
 
 echo Preparing package directory ...
 mkdir -p $TMP_DEB/usr/share/turtl
-cp -R $TMP/turtl-linux64/turtl/* $TMP_DEB/usr/share/turtl
+cp -R $TMP/turtl-linux$arch/turtl/* $TMP_DEB/usr/share/turtl
 
 echo Moving icon ...
 mkdir -p $TMP_DEB/usr/share/pixmaps
@@ -53,7 +61,7 @@ EOF
 
 echo Creating debian package ...
 cd $TMP
-$(which fpm) -s dir -t deb -n turtl -v $VERSION --license GPLv3 --vendor "Lyon Bros. Enterprises, LLC" --maintainer info@turtl.it --url https://turtl.it --description "Private notes and bookmarks with collaboration." deb/=/
+$(which fpm) -s dir -t deb -n turtl -v $version --license GPLv3 --vendor "Lyon Bros. Enterprises, LLC" --maintainer info@turtl.it --url https://turtl.it --description "Private notes and bookmarks with collaboration." deb/=/
 
 echo
 echo Package created in $TMP
