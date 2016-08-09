@@ -16,7 +16,7 @@ For more information about Turtl, please got to www.turtl.it
   ```
   sudo gem install fpm
   ```
-  This [wiki](https://github.com/jordansissel/fpm/wiki) provides all necessary information about EPM.
+  This [wiki](https://github.com/jordansissel/fpm/wiki) provides all necessary information about FPM.
 
 2. Run the shell script
 
