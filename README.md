@@ -22,7 +22,7 @@ For more information about Turtl, please got to www.turtl.it
 
   Download the script turtl_deb and run it localy.
   ```
-    wget https://github.com/adelolmo/turtl-debian/blob/master/turtl_deb
+    wget https://raw.githubusercontent.com/adelolmo/turtl-debian/master/turtl_deb
     /bin/sh turtl_deb 64|32 [version]
   ```
   The first parameter is the system architecture, it must be 32 or 64. The second parameter is the version of Turtl, if it's not given it will use the latest version available in https://turtl.it
