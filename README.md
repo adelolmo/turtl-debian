@@ -1,7 +1,7 @@
 # Turtl package for Debian and Ubuntu
 
 Creates a Debian/Ubuntu package for Turtl. 
-For more information about Turtl, please got to www.turtl.it
+For more information about Turtl, please visit www.turtl.it
 
 ## How to install
 
