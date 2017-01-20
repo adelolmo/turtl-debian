@@ -27,3 +27,9 @@ For more information about Turtl, please visit www.turtlapp.com
   ```
   The first parameter is the system architecture, it must be 32 or 64. The second parameter is the version of Turtl, if it's not given it will use the latest version available in https://turtlapp.com
   The debian package will be created under /tmp/turtldeb
+  
+## Oficial Turtl server URL
+
+```
+https://api.turtlapp.com/v2
+```
