@@ -2,7 +2,7 @@
 
 set -e
 
-[ $(which fpm) ] || echo "Install fpm first. https://github.com/jordansissel/fpm/wiki"
+command -v fpm >/dev/null 2>&1 || { echo >&2 "Install fpm first. https://github.com/jordansissel/fpm/wiki"; exit 1; }
 
 TMP=/tmp/turtldeb
 TMP_DEB=$TMP/deb
