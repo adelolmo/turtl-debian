@@ -1,0 +1,82 @@
+#!/bin/sh -e
+
+TMP=build/tmp
+RELEASE=build/releases
+
+rm -fr build
+mkdir -p ${TMP} ${RELEASE}
+
+arch=64
+if [ -n "$1" ]; then
+        arch=$1
+fi
+
+version=$( wget https://turtlapp.com -O build/turtlhome > /dev/null 2>&1 && cat build/turtlhome | grep -oE "turtl-linux${arch}-[0-9].[0-9].[0-9]" | uniq | grep -Eo "[0-9].[0-9].[0-9]*$" )
+if [ -n "$2" ]; then
+	version=$2
+fi
+
+echo "* Retrieve artifact ${arch} ${version} ..."
+[ -f /tmp/turtl-linux${arch}.tar.bz2 ] || wget -O /tmp/turtl-linux${arch}.tar.bz2 https://turtlapp.com/releases/desktop/turtl-linux${arch}-${version}.tar.bz2
+
+echo "* Extract tar ..."
+tar xf /tmp/turtl-linux${arch}.tar.bz2 -C build
+
+echo "* Prepare package directory ..."
+mkdir -p ${TMP}/usr/share/turtl
+cp -R build/turtl-linux${arch}/turtl/* ${TMP}/usr/share/turtl
+
+echo "* Create icon ..."
+mkdir -p ${TMP}/usr/share/pixmaps
+mv build/turtl-linux${arch}/turtl/icon.png ${TMP}/usr/share/pixmaps/turtl.png
+
+echo "* Create menu entry ..."
+mkdir -p ${TMP}/usr/share/applications
+cat > ${TMP}/usr/share/applications/turtl.desktop <<EOF
+[Desktop Entry]
+Name=Turtl
+GenericName=Secure notes
+Comment=Private notes and bookmarks with collaboration.
+Exec=/usr/share/turtl/turtl
+Icon=turtl
+Type=Application
+Terminal=false
+Categories=Network;Application;
+Keywords=secure;security;privacy;private;notes;bookmarks;collaborate;research;
+StartupNotify=true
+EOF
+
+echo "* Copy content ..."
+cp -r build/turtl-linux${arch}/turtl/* ${TMP}/usr/share/turtl
+
+echo "* Fix files permissions ..."
+chmod 0644 ${TMP}/usr/share/turtl/*
+chmod 0755 ${TMP}/usr/share/turtl/turtl ${TMP}/usr/share/turtl/turtl-bin ${TMP}/usr/share/turtl/chromedriver ${TMP}/usr/share/turtl/nacl* ${TMP}/usr/share/turtl/nwjc ${TMP}/usr/share/turtl/payload
+chmod 0755 ${TMP}/usr/share/turtl/locales ${TMP}/usr/share/turtl/lib ${TMP}/usr/share/turtl/pnacl
+chmod 0644 ${TMP}/usr/share/turtl/locales/* ${TMP}/usr/share/turtl/pnacl/*
+chmod 0755 ${TMP}/usr/share/turtl/lib/*
+
+echo "* Create debian package ..."
+size=$(du -cs ${TMP} | sed '1!d' | grep -oe "^[0-9]*")
+[ "$arch" = 64 ] && architecture="amd64"
+[ "$arch" = 32 ] && architecture="i386"
+
+mkdir -p ${TMP}/DEBIAN
+cat > ${TMP}/DEBIAN/control <<EOF
+Package: turtl
+Version: ${version}
+License: GPLv3
+Vendor: Lyon Bros. Enterprises, LLC
+Architecture: ${architecture}
+Maintainer: info@turtlapp.com
+Installed-Size: ${size}
+Section: default
+Priority: extra
+Homepage: https://turtlapp.com
+Description: Private notes and bookmarks with collaboration.
+
+EOF
+
+fakeroot dpkg-deb -b -z9 ${TMP} ${RELEASE}
+
+echo done
