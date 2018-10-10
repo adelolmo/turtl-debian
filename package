@@ -8,16 +8,16 @@ mkdir -p ${TMP} ${RELEASE}
 
 arch=64
 if [ -n "$1" ]; then
-        arch=$1
+    arch=$1
 fi
 
-version=$( wget https://turtlapp.com -O build/turtlhome > /dev/null 2>&1 && cat build/turtlhome | grep -oE "turtl-linux${arch}-[0-9].[0-9].[0-9]" | uniq | grep -Eo "[0-9].[0-9].[0-9]*$" )
-if [ -n "$2" ]; then
-	version=$2
+version=$2
+if [ ! -n "$2" ]; then
+    version=$( wget https://turtlapp.com -O build/turtlhome > /dev/null 2>&1 && cat build/turtlhome | grep "linux$arch"|uniq| grep -oE "v.*/"|sed 's/v//g;s/\///g' )
 fi
 
 echo "* Retrieve artifact ${arch} ${version} ..."
-[ -f /tmp/turtl-linux${arch}.tar.bz2 ] || wget -O /tmp/turtl-linux${arch}.tar.bz2 https://turtlapp.com/releases/desktop/turtl-linux${arch}-${version}.tar.bz2
+[ -f /tmp/turtl-linux${arch}.tar.bz2 ] || wget -O /tmp/turtl-linux${arch}.tar.bz2 https://github.com/turtl/desktop/releases/download/v${version}/turtl-${version}-linux${arch}.tar.bz2
 
 echo "* Extract tar ..."
 tar xf /tmp/turtl-linux${arch}.tar.bz2 -C build
@@ -48,13 +48,6 @@ EOF
 
 echo "* Copy content ..."
 cp -r build/turtl-linux${arch}/turtl/* ${TMP}/usr/share/turtl
-
-echo "* Fix files permissions ..."
-chmod 0644 ${TMP}/usr/share/turtl/*
-chmod 0755 ${TMP}/usr/share/turtl/turtl ${TMP}/usr/share/turtl/turtl-bin ${TMP}/usr/share/turtl/chromedriver ${TMP}/usr/share/turtl/nacl* ${TMP}/usr/share/turtl/nwjc ${TMP}/usr/share/turtl/payload
-chmod 0755 ${TMP}/usr/share/turtl/locales ${TMP}/usr/share/turtl/lib ${TMP}/usr/share/turtl/pnacl
-chmod 0644 ${TMP}/usr/share/turtl/locales/* ${TMP}/usr/share/turtl/pnacl/*
-chmod 0755 ${TMP}/usr/share/turtl/lib/*
 
 echo "* Create debian package ..."
 size=$(du -cs ${TMP} | sed '1!d' | grep -oe "^[0-9]*")
