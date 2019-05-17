@@ -6,8 +6,8 @@ For more information about Turtl, please visit www.turtlapp.com
 ## How to install
 
 ```
-  wget https://github.com/adelolmo/turtl-debian/releases/download/v0.7.1/turtl_0.7.1_amd64.deb
-  sudo dpkg -i turtl_0.7.1_amd64.deb
+  wget https://github.com/adelolmo/turtl-debian/releases/download/v0.7.2.5/turtl_0.7.2.5_amd64.deb
+  sudo dpkg -i turtl_0.7.2.5_amd64.deb
 ```
 
 ## How to build
