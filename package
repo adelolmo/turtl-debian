@@ -13,7 +13,7 @@ fi
 
 version=$2
 if [ ! -n "$2" ]; then
-    version=$( wget https://turtlapp.com -O build/turtlhome > /dev/null 2>&1 && cat build/turtlhome | grep "linux$arch"|uniq| grep -oE "v.*/"|sed 's/v//g;s/\///g' )
+    version=$( wget https://turtlapp.com/download -O build/turtlhome > /dev/null 2>&1 && cat build/turtlhome | grep "linux$arch"|uniq| grep -oE "v.*/"|sed 's/v//g;s/\///g' )
 fi
 
 echo "* Retrieve artifact ${arch} ${version} ..."
