@@ -16,19 +16,22 @@ if [ ! -n "$2" ]; then
     version=$( wget https://turtlapp.com/download -O build/turtlhome > /dev/null 2>&1 && cat build/turtlhome | grep "linux$arch"|uniq| grep -oE "v.*/"|sed 's/v//g;s/\///g' )
 fi
 
+artifact=$3
+wget -O /tmp/turtl-linux.tar.bz2 ${artifact}
+
 echo "* Retrieve artifact ${arch} ${version} ..."
-[ -f /tmp/turtl-linux${arch}.tar.bz2 ] || wget -O /tmp/turtl-linux${arch}.tar.bz2 https://github.com/turtl/desktop/releases/download/v${version}/turtl-${version}-linux${arch}.tar.bz2
+[ -f /tmp/turtl-linux.tar.bz2 ] || wget -O /tmp/turtl-linux${arch}.tar.bz2 https://github.com/turtl/desktop/releases/download/v${version}/turtl-${version}-linux${arch}.tar.bz2
 
 echo "* Extract tar ..."
-tar xf /tmp/turtl-linux${arch}.tar.bz2 -C build
+tar xf /tmp/turtl-linux.tar.bz2 -C build
 
 echo "* Prepare package directory ..."
 mkdir -p ${TMP}/usr/share/turtl
-cp -R build/turtl-linux${arch}/turtl/* ${TMP}/usr/share/turtl
+cp -R build/turtl-linux*/turtl/* ${TMP}/usr/share/turtl
 
 echo "* Create icon ..."
 mkdir -p ${TMP}/usr/share/pixmaps
-mv build/turtl-linux${arch}/turtl/icon.png ${TMP}/usr/share/pixmaps/turtl.png
+mv build/turtl-linux*/turtl/icon.png ${TMP}/usr/share/pixmaps/turtl.png
 
 echo "* Create menu entry ..."
 mkdir -p ${TMP}/usr/share/applications
@@ -47,7 +50,7 @@ StartupNotify=true
 EOF
 
 echo "* Copy content ..."
-cp -r build/turtl-linux${arch}/turtl/* ${TMP}/usr/share/turtl
+cp -r build/turtl-linux*/turtl/* ${TMP}/usr/share/turtl
 
 echo "* Create debian package ..."
 size=$(du -cs ${TMP} | sed '1!d' | grep -oe "^[0-9]*")
