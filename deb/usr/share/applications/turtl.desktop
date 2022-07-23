@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Turtl
+GenericName=Secure notes
+Comment=Private notes and bookmarks with collaboration.
+Exec=/usr/share/turtl/turtl
+Icon=turtl
+Type=Application
+Terminal=false
+Categories=Network;Application;
+Keywords=secure;security;privacy;private;notes;bookmarks;collaborate;research;
+StartupNotify=true

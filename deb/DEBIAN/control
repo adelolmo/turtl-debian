@@ -1,0 +1,11 @@
+Package: turtl
+Version: {{version}}
+License: GPLv3
+Vendor: Lyon Bros. Enterprises, LLC
+Architecture: {{architecture}}
+Maintainer: info@turtlapp.com
+Installed-Size: {{size}}
+Section: default
+Priority: extra
+Homepage: https://turtlapp.com
+Description: Private notes and bookmarks with collaboration.
