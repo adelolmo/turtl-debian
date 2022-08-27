@@ -7,5 +7,6 @@ Maintainer: info@turtlapp.com
 Installed-Size: {{size}}
 Section: default
 Priority: extra
+Depends: libgconf-2-4
 Homepage: https://turtlapp.com
 Description: Private notes and bookmarks with collaboration.
