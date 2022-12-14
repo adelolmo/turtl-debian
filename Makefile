@@ -1,13 +1,14 @@
-#MAKEFLAGS += --silent
+MAKEFLAGS += --silent
 
-APP_HOME=usr/share/turtl
+APP_HOME = usr/share/turtl
 TAR_FILE = turtl-linux-$(VERSION)-$(ARCH).tar.bz2
 TAR_URL = https://github.com/turtl/desktop/releases/download/v$(VERSION)/turtl-$(VERSION)-linux$(TAR_ARCH).tar.bz2
 
 VERSION = 0.7.2.6-pre-sync-fix
+PACKAGE_VERSION = ~ado1
 
 BUILD_DIR = build
-RELEASE_DIR = $(BUILD_DIR)/release
+RELEASE_DIR := $(realpath $(CURDIR)/..)
 TMP_DIR = $(BUILD_DIR)/tmp
 TAR_CACHE = $(BUILD_DIR)/$(TAR_FILE)
 PLATFORM := $(shell uname -m)
@@ -54,4 +55,4 @@ cp:
 
 control:
 	$(eval SIZE=$(shell du -sbk $(TMP_DIR)/ | grep -o '[0-9]*'))
-	sed -i "s/{{version}}/$(VERSION)/;s/{{size}}/$(SIZE)/;s/{{architecture}}/$(ARCH)/" $(TMP_DIR)/DEBIAN/control
+	sed -i "s/{{version}}/$(VERSION)$(PACKAGE_VERSION)/;s/{{size}}/$(SIZE)/;s/{{architecture}}/$(ARCH)/" $(TMP_DIR)/DEBIAN/control

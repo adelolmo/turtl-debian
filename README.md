@@ -5,20 +5,20 @@ For more information about Turtl, please visit www.turtlapp.com
 
 ## How to install
 
-```
-  wget https://github.com/adelolmo/turtl-debian/releases/download/v0.7.2.6/turtl_0.7.2.6_amd64.deb
-  sudo dpkg -i turtl_0.7.2.6_amd64.deb
-```
+Download the package from https://github.com/adelolmo/turtl-debian/releases and install it:
+
+    sudo dpkg -i turtl_0.7.2.6_amd64.deb
 
 ## How to build
 
-  Download the script ```package``` and run it locally.
-  ```
-    wget https://raw.githubusercontent.com/adelolmo/turtl-debian/master/turtl_deb
-    /bin/sh package 64|32 [version]
-  ```
-  The first parameter is the system architecture, it must be 32 or 64. The second parameter is the version of Turtl, if it's not given it will use the latest version available in https://turtlapp.com
-  The debian package will be created under build/releases.
+    make
+
+Parameters available are `VERSION` and `ARCH`. e.g:
+
+    make VERSION=0.7.2.6-pre-sync-fix ARCH=i386
+
+Turtle comes precompiled for `amd64` and `i386` architectures. 
+For the available versions, please visit https://turtlapp.com 
   
 ## Oficial Turtl server URL
 

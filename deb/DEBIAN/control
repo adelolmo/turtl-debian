@@ -3,7 +3,7 @@ Version: {{version}}
 License: GPLv3
 Vendor: Lyon Bros. Enterprises, LLC
 Architecture: {{architecture}}
-Maintainer: info@turtlapp.com
+Maintainer: andoni.delolmo@gmail.com
 Installed-Size: {{size}}
 Section: default
 Priority: extra
